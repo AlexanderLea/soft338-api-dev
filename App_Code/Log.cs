@@ -58,6 +58,13 @@ public class Log
         set { _Cmd = value; }
     }
 
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="_senderMAC">MAC Address of message sender</param>
+    /// <param name="_recipientMAC">MAC Address of message recipient</param>
+    /// <param name="_cmdType">Type of command</param>
+    /// <param name="_cmd">The command itself</param>
 	public Log(string _senderMAC, string _recipientMAC, string _cmdType, string _cmd)
 	{
         this.SenderMAC = _senderMAC;
