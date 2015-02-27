@@ -10,7 +10,7 @@ using System.Web;
 /// 
 
 [DataContract]
-public class Log
+public class MessageLog
 {
     //ID
     //FROM_MAC
@@ -65,12 +65,18 @@ public class Log
     /// <param name="_recipientMAC">MAC Address of message recipient</param>
     /// <param name="_cmdType">Type of command</param>
     /// <param name="_cmd">The command itself</param>
-	public Log(string _senderMAC, string _recipientMAC, string _cmdType, string _cmd)
+    /// <param name="_timestamp">Timesamp for the message</param>
+	public MessageLog(string _senderMAC, string _recipientMAC, string _cmdType, string _cmd, DateTime _timestamp)
 	{
         this.SenderMAC = _senderMAC;
         this.RecipientMAC = _recipientMAC;
-        this.Timestamp = DateTime.Now;
+        this.Timestamp = _timestamp;
         this.CmdType = _cmdType;
-        this.Cmd = _cmd;
+        this.Cmd = _cmd;       
 	}
+
+    public MessageLog()
+    {
+
+    }
 }

@@ -6,8 +6,13 @@ using System.Runtime.Serialization.Json;
 using System.Web;
 
 /// <summary>
-/// Summary description for HttpHandler
+/// HttpHandler handles HTTP Requests aimed at /log/{id}
 /// </summary>
+/// TODO:
+///     - Create database
+///     - Do URL mapping
+///     - Implement basic API
+///     - Comply with best practises
 public class HttpHandler : IHttpHandler
 {
     public bool IsReusable { get { return true; } }
