@@ -10,9 +10,10 @@ using System.Web;
 /// </summary>
 /// TODO:
 ///     - Create database
-///     - Do URL mapping
 ///     - Implement basic API
 ///     - Comply with best practises
+///     
+
 public class HttpHandler : IHttpHandler
 {
     public bool IsReusable { get { return true; } }
@@ -30,9 +31,8 @@ public class HttpHandler : IHttpHandler
 
         UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
 
-        if (matchResults != null) //must have an ID?
+        if (matchResults != null) //must have an ID
         {
-
             string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
             int id;
 
@@ -66,8 +66,7 @@ public class HttpHandler : IHttpHandler
             {
                 case "get":
                     //get list
-                    //listAll(_context);
-                    _context.Response.Write("get list");
+                    listAll(_context);
                     break;
                 case "post":
                     //insert

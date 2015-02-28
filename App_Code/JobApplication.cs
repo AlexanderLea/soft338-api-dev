@@ -39,21 +39,12 @@ public class JobApplication
     }
 
     //Company business Sector
-    private string _companySector;
+    private string _businessSector;
     [DataMember]
-    public string CompanySector
+    public string BusinessSector
     {
-        get { return _companySector; }
-        set { _companySector = value; }
-    }
-
-    //Job Advert URL
-    private string _jobAdURL;
-    [DataMember]
-    public string JobAdURL
-    {
-        get { return _jobAdURL; }
-        set { _jobAdURL = value; }
+        get { return _businessSector; }
+        set { _businessSector = value; }
     }
 
     //Postcode
@@ -84,13 +75,13 @@ public class JobApplication
     }
 
     //Salary
-    private int _salary;
-    [DataMember]
-    public int Salary
-    {
-        get { return _salary; }
-        set { _salary = value; }
-    }
+    //private int _salary;
+    //[DataMember]
+    //public int Salary
+    //{
+    //    get { return _salary; }
+    //    set { _salary = value; }
+    //}
 
     //Recruiter Name
     private string _recruiterName;
@@ -102,19 +93,94 @@ public class JobApplication
     }
 
     //Recruiter Contact
-    private string _recruiterContact;
+    private string _recruiterNumber;
     [DataMember]
-    public string RecruiterContact
+    public string RecruiterNumber
     {
-        get { return _recruiterContact; }
-        set { _recruiterContact = value; }
+        get { return _recruiterNumber; }
+        set { _recruiterNumber = value; }
     }
 
+    //Recruiter Email
+    private string _recruiterEmail;
+    [DataMember]
+    public string RecruiterEmail
+    {
+        get { return _recruiterEmail; }
+        set { _recruiterEmail = value; }
+    }
+
+    //Application Notes
+    private string _applicationNotes;
+    [DataMember]
+    public string ApplicationNotes
+    {
+        get { return _applicationNotes; }
+        set { _applicationNotes = value; }
+    }
 
     public JobApplication()
     {
         //
         // TODO: Add constructor logic here
         //
+    }
+
+    /// <summary>
+    /// Constructor without town info, for creating applications from user input
+    /// </summary>
+    /// <param name="_jobTitle">Title of job</param>
+    /// <param name="_companyName">Name of Company</param>
+    /// <param name="_businessSector">Business Sector in which the company operates</param>
+    /// <param name="_postcode">Job location postcode</param>
+    /// <param name="_recruiterName">Name of recruiting peron</param>
+    /// <param name="_recruiterNumber">Phont number of recruiter</param>
+    /// <param name="_recruiterEmail">Email address of recruiter</param>
+    /// <param name="_applicationNotes">Notes on the job application</param>
+    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector, 
+        string _postcode, string _recruiterName, string _recruiterNumber, string _recruiterEmail,
+            string _applicationNotes)
+    {
+        this.JobTitle = _jobTitle;
+        this.JobDescription = _jobDesc;
+        this.CompanyName = _companyName;
+        this.BusinessSector = _businessSector;
+        this.JobPostcode = _postcode;
+        this.JobTown = "TODO";
+        this.JobCounty = "TODO";
+        this.RecruiterName = _recruiterName;
+        this.RecruiterNumber = _recruiterNumber;
+        this.RecruiterEmail = _recruiterEmail;
+        this.ApplicationNotes = _applicationNotes;
+    }
+
+    /// <summary>
+    /// Constructor with all params, for pulling info from database
+    /// </summary>
+    /// <param name="_jobTitle">Title of job</param>
+    /// <param name="_companyName">Name of Company</param>
+    /// <param name="_businessSector">Business Sector in which the company operates</param>
+    /// <param name="_postcode">Job location postcode</param>
+    /// <param name="_town">Town in which the job is based</param>
+    /// <param name="_county">County in which the job is based</param>
+    /// <param name="_recruiterName">Name of recruiting peron</param>
+    /// <param name="_recruiterNumber">Phont number of recruiter</param>
+    /// <param name="_recruiterEmail">Email address of recruiter</param>
+    /// <param name="_applicationNotes">Notes on the job application</param>
+    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
+        string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber, 
+            string _recruiterEmail, string _applicationNotes)
+    {
+        this.JobTitle = _jobTitle;
+        this.JobDescription = _jobDesc;
+        this.CompanyName = _companyName;
+        this.BusinessSector = _businessSector;
+        this.JobPostcode = _postcode;
+        this.JobTown = _town;
+        this.JobCounty = _county;
+        this.RecruiterName = _recruiterName;
+        this.RecruiterNumber = _recruiterNumber;
+        this.RecruiterEmail = _recruiterEmail;
+        this.ApplicationNotes = _applicationNotes;
     }
 }
