@@ -25,8 +25,8 @@ public class HttpHandler : IHttpHandler
         string path = request.Path.Split('/').Last();
 
         Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
-        UriTemplate idTemplate = new UriTemplate("{log}/{id}");
-        UriTemplate defaultTemplate = new UriTemplate("{log}");
+        UriTemplate idTemplate = new UriTemplate("{application}/{id}");
+        UriTemplate defaultTemplate = new UriTemplate("{application}");
 
         
 
