@@ -144,10 +144,9 @@ public class JobApplicationDB
 
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("UPDATE JobApplications SET [JobTitle] = @JobTitle, [CompanyName] = @CompanyName, "
-            + "[JobDescription] = @JobDescription, [BusinessSector] = @BusinessSector, [Postcode] = @PostCode, [Town], [County], [RecruiterName], [RecruiterNumber], [RecruiterEmail], "
-            + "[ApplicationNotes]) "
-            + "VALUES (, , , , , @Town, @County, @RecruiterName, "
-            + "@RecruiterNumber, @RecruiterEmail, @ApplicationNotes); SELECT CAST(Scope_Identity() as int);", con);
+            + "[JobDescription] = @JobDescription, [BusinessSector] = @BusinessSector, [Postcode] = @PostCode, [Town] = @Town, "
+            + "[County] = @County, [RecruiterName] = @RecruiterName, [RecruiterNumber] = @RecruiterNumber, [RecruiterEmail] = @RecruiterEmail, "
+            + "[ApplicationNotes] =  @ApplicationNotes WHERE [ID] = @ID", con);
 
         cmd.Parameters.AddWithValue("@JobTitle", _job.JobTitle);
         cmd.Parameters.AddWithValue("@CompanyName", _job.CompanyName);
@@ -160,6 +159,7 @@ public class JobApplicationDB
         cmd.Parameters.AddWithValue("@RecruiterNumber", _job.RecruiterNumber);
         cmd.Parameters.AddWithValue("@RecruiterEmail", _job.RecruiterEmail);
         cmd.Parameters.AddWithValue("@ApplicationNotes", _job.ApplicationNotes);
+        cmd.Parameters.AddWithValue("@ID", _id);
 
         try
         {
@@ -168,16 +168,43 @@ public class JobApplicationDB
                 con.Open();
 
                 cmd.ExecuteNonQuery();
+                successful = true;
             }
         }
         catch (Exception e)
         {
             ErrorMessage = e.Message;
+            successful = false;
         }
+
+        return successful;
     }
 
-    public static int delete(int _id)
+    public static bool delete(int _id)
     {
-        throw new NotImplementedException();
+        bool successful;
+
+        SqlConnection con = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("DELETE FROM JobApplications WHERE [ID] = @ID", con);
+
+        cmd.Parameters.AddWithValue("@ID", _id);
+
+        try
+        {
+            using (con)
+            {
+                con.Open();
+
+                cmd.ExecuteNonQuery();
+                successful = true;
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+            successful = false;
+        }
+
+        return successful;
     }
 }

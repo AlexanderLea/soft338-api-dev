@@ -47,8 +47,7 @@ public class HttpHandler : IHttpHandler
                         break;
                     case "put":
                         //update individual
-                        //update(_context, id);
-                        _context.Response.Write("ID: " + id + ", Method: put");
+                        update(_context, id);
                         break;
                     case "delete":
                         //delete individual
@@ -138,12 +137,12 @@ public class HttpHandler : IHttpHandler
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
 
-        int id = JobApplicationDB.update(job, _id);
+        bool success = JobApplicationDB.update(job, _id);
 
-        if (id != -1)
+        if (success)
         {
-            _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;
-            _context.Response.StatusCode = 201;
+            _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + _id;
+            _context.Response.StatusCode = 204;
         }
         else
         {
