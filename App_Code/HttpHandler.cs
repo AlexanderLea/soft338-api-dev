@@ -22,14 +22,57 @@ public class HttpHandler : IHttpHandler
         HttpRequest request = _context.Request;
 
         //get folder bit of path
-        string path = request.Path.Split('/').Last();
+        Uri uri = new Uri(request.Url.AbsoluteUri);
 
         Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
-        UriTemplate idTemplate = new UriTemplate("{application}/{id}");
-        UriTemplate defaultTemplate = new UriTemplate("{application}");
+        UriTemplate idTemplate = new UriTemplate("applications/{id}");
+        UriTemplate defaultTemplate = new UriTemplate("applications");
 
-        
+        UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
 
+        if (matchResults != null) //must have an ID?
+        {
+
+            string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
+            int id;
+
+            if (int.TryParse(strID, out id))
+            {
+                switch (request.HttpMethod)
+                {
+                    case "get":
+                        //get individual
+                        get(_context, id);
+                        break;
+                    case "put":
+                        //update individual
+                        update(_context, id);
+                        break;
+                    case "delete":
+                        //delete individual
+                        delete(_context, id);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        else //default
+        {
+            switch (request.HttpMethod)
+            {
+                case "get":
+                    //get list
+                    listAll(_context);
+                    break;
+                case "post":
+                    //insert
+                    insert(_context);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     private void listAll(HttpContext _context)
@@ -47,7 +90,7 @@ public class HttpHandler : IHttpHandler
         jsonData.WriteObject(outputStream, logList);
     }
 
-    private void get(HttpContext _context)
+    private void get(HttpContext _context, int _id)
     {
         throw new NotImplementedException();
     }
@@ -64,12 +107,12 @@ public class HttpHandler : IHttpHandler
         //TODO: return newly inserted object, or error!
     }
 
-    private void update(HttpContext _context)
+    private void update(HttpContext _context, int _id)
     {
         throw new NotImplementedException();
     }
 
-    private void delete(HttpContext _context)
+    private void delete(HttpContext _context, int _id)
     {
         throw new NotImplementedException();
     }
