@@ -42,15 +42,18 @@ public class HttpHandler : IHttpHandler
                 {
                     case "get":
                         //get individual
-                        get(_context, id);
+                        //get(_context, id);
+                        _context.Response.Write("ID: " + id + ", Method: get");
                         break;
                     case "put":
                         //update individual
-                        update(_context, id);
+                        //update(_context, id);
+                        _context.Response.Write("ID: " + id + ", Method: put");
                         break;
                     case "delete":
                         //delete individual
-                        delete(_context, id);
+                        //delete(_context, id);
+                        _context.Response.Write("ID: " + id + ", Method: delete");
                         break;
                     default:
                         break;
@@ -63,11 +66,13 @@ public class HttpHandler : IHttpHandler
             {
                 case "get":
                     //get list
-                    listAll(_context);
+                    //listAll(_context);
+                    _context.Response.Write("get list");
                     break;
                 case "post":
                     //insert
-                    insert(_context);
+                    //insert(_context);
+                    _context.Response.Write("Post");
                     break;
                 default:
                     break;
@@ -83,11 +88,11 @@ public class HttpHandler : IHttpHandler
         _context.Response.ContentType = "application/json";
 
         //Create the new serializer object - NOTE the type entered into the constructor!
-        DataContractJsonSerializer jsonData = new DataContractJsonSerializer(typeof(IEnumerable<Log>));
+        DataContractJsonSerializer jsonData = new DataContractJsonSerializer(typeof(IEnumerable<JobApplication>));
 
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
-        IEnumerable<Log> logList = LogDB.getList();
-        jsonData.WriteObject(outputStream, logList);
+        IEnumerable<JobApplication> appList = JobApplicationDB.getList();
+        jsonData.WriteObject(outputStream, appList);
     }
 
     private void get(HttpContext _context, int _id)
@@ -97,13 +102,13 @@ public class HttpHandler : IHttpHandler
 
     private void insert(HttpContext _context)
     {
-        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(Log));
+        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
 
-        Log l = (Log)json.ReadObject(_context.Request.InputStream);
+        JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
 
-        int lID = LogDB.insert(l);
+        JobApplication inserted = JobApplicationDB.insert(job);
 
-        _context.Response.StatusDescription = "New Log saved. ID= " + lID;
+        //_context.Response.StatusDescription = "New Log saved. ID= " + lID;
         //TODO: return newly inserted object, or error!
     }
 
