@@ -38,7 +38,7 @@ public class HttpHandler : IHttpHandler
 
             if (int.TryParse(strID, out id))
             {
-                switch (request.HttpMethod)
+                switch (request.HttpMethod.ToLower())
                 {
                     case "get":
                         //get individual
@@ -62,7 +62,7 @@ public class HttpHandler : IHttpHandler
         }
         else //default
         {
-            switch (request.HttpMethod)
+            switch (request.HttpMethod.ToLower())
             {
                 case "get":
                     //get list
@@ -70,8 +70,8 @@ public class HttpHandler : IHttpHandler
                     break;
                 case "post":
                     //insert
-                    //insert(_context);
-                    _context.Response.Write("Post");
+                    insert(_context);
+                    //_context.Response.Write("Post");
                     break;
                 default:
                     break;
@@ -105,9 +105,20 @@ public class HttpHandler : IHttpHandler
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
 
-        JobApplication inserted = JobApplicationDB.insert(job);
+        int id = JobApplicationDB.insert(job);
 
-        //_context.Response.StatusDescription = "New Log saved. ID= " + lID;
+
+        if (id != -1)
+        {
+            _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;
+            _context.Response.StatusCode = 201;
+        }
+        else
+        {
+            _context.Response.StatusCode = 500;
+            _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
+        }
+        //
         //TODO: return newly inserted object, or error!
     }
 
