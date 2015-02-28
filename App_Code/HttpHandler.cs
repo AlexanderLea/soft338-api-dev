@@ -133,7 +133,6 @@ public class HttpHandler : IHttpHandler
 
         int id = JobApplicationDB.insert(job);
 
-
         if (id != -1)
         {
             _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;

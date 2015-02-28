@@ -58,7 +58,7 @@ public class JobApplicationDB
 
     public static JobApplication get(int _id)
     {
-        JobApplication temp = new JobApplication();
+        JobApplication temp = null;
 
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("SELECT * FROM JobApplications WHERE ID = @id", con);
@@ -87,7 +87,6 @@ public class JobApplicationDB
                         (string)reader["RecruiterNumber"],
                         (string)reader["RecruiterEmail"],
                         (string)reader["ApplicationNotes"]);
-
                 }
             }
         }
