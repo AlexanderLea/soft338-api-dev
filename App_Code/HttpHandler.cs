@@ -6,11 +6,9 @@ using System.Runtime.Serialization.Json;
 using System.Web;
 
 /// <summary>
-/// HttpHandler handles HTTP Requests aimed at /log/{id}
+/// HttpHandler handles HTTP Requests aimed at /applications/{id}
 /// </summary>
 /// TODO:
-///     - Create database
-///     - Implement basic API
 ///     - Comply with best practises
 ///     
 
@@ -43,7 +41,6 @@ public class HttpHandler : IHttpHandler
                     case "get":
                         //get individual
                         get(_context, id);
-                        //_context.Response.Write("ID: " + id + ", Method: get");
                         break;
                     case "put":
                         //update individual
@@ -51,8 +48,7 @@ public class HttpHandler : IHttpHandler
                         break;
                     case "delete":
                         //delete individual
-                        //delete(_context, id);
-                        _context.Response.Write("ID: " + id + ", Method: delete");
+                        delete(_context, id);
                         break;
                     default:
                         _context.Response.StatusCode = 405;
@@ -71,7 +67,6 @@ public class HttpHandler : IHttpHandler
                 case "post":
                     //insert
                     insert(_context);
-                    //_context.Response.Write("Post");
                     break;
                 default:
                     _context.Response.StatusCode = 405;
@@ -92,7 +87,17 @@ public class HttpHandler : IHttpHandler
 
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
         IEnumerable<JobApplication> appList = JobApplicationDB.getList();
-        jsonData.WriteObject(outputStream, appList);
+
+        if (appList.Count() > 0)
+        {
+            jsonData.WriteObject(outputStream, appList);
+            _context.Response.StatusCode = 200;
+        }
+        else
+        {
+            _context.Response.StatusCode = 204;
+            _context.Response.StatusDescription = "No data";
+        }
     }
 
     private void get(HttpContext _context, int _id)
@@ -107,7 +112,17 @@ public class HttpHandler : IHttpHandler
 
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
         JobApplication app = JobApplicationDB.get(_id);
-        jsonData.WriteObject(outputStream, app);
+
+        if (app != null)
+        {
+            jsonData.WriteObject(outputStream, app);
+            _context.Response.StatusCode = 200;
+        }
+        else
+        {
+            _context.Response.StatusCode = 204;
+            _context.Response.StatusDescription = "No data";
+        }
     }
 
     private void insert(HttpContext _context)
@@ -153,6 +168,16 @@ public class HttpHandler : IHttpHandler
 
     private void delete(HttpContext _context, int _id)
     {
-        throw new NotImplementedException();
+        bool success = JobApplicationDB.delete(_id);
+
+        if (success)
+        {           
+            _context.Response.StatusCode = 204;
+        }
+        else
+        {
+            _context.Response.StatusCode = 500;
+            _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
+        }
     }
 }
