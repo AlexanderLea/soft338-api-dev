@@ -42,8 +42,8 @@ public class HttpHandler : IHttpHandler
                 {
                     case "get":
                         //get individual
-                        //get(_context, id);
-                        _context.Response.Write("ID: " + id + ", Method: get");
+                        get(_context, id);
+                        //_context.Response.Write("ID: " + id + ", Method: get");
                         break;
                     case "put":
                         //update individual
@@ -56,6 +56,7 @@ public class HttpHandler : IHttpHandler
                         _context.Response.Write("ID: " + id + ", Method: delete");
                         break;
                     default:
+                        _context.Response.StatusCode = 405;
                         break;
                 }
             }
@@ -66,7 +67,7 @@ public class HttpHandler : IHttpHandler
             {
                 case "get":
                     //get list
-                    listAll(_context);
+                    getAll(_context);
                     break;
                 case "post":
                     //insert
@@ -74,12 +75,13 @@ public class HttpHandler : IHttpHandler
                     //_context.Response.Write("Post");
                     break;
                 default:
+                    _context.Response.StatusCode = 405;
                     break;
             }
         }
     }
 
-    private void listAll(HttpContext _context)
+    private void getAll(HttpContext _context)
     {
         Stream outputStream = _context.Response.OutputStream;
 
@@ -96,7 +98,17 @@ public class HttpHandler : IHttpHandler
 
     private void get(HttpContext _context, int _id)
     {
-        throw new NotImplementedException();
+        Stream outputStream = _context.Response.OutputStream;
+
+        // Notify caller that the response resource is in JSON.
+        _context.Response.ContentType = "application/json";
+
+        //Create the new serializer object - NOTE the type entered into the constructor!
+        DataContractJsonSerializer jsonData = new DataContractJsonSerializer(typeof(JobApplication));
+
+        //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
+        JobApplication app = JobApplicationDB.get(_id);
+        jsonData.WriteObject(outputStream, app);
     }
 
     private void insert(HttpContext _context)
@@ -118,13 +130,26 @@ public class HttpHandler : IHttpHandler
             _context.Response.StatusCode = 500;
             _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
         }
-        //
-        //TODO: return newly inserted object, or error!
     }
 
     private void update(HttpContext _context, int _id)
     {
-        throw new NotImplementedException();
+        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
+
+        JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
+
+        int id = JobApplicationDB.update(job, _id);
+
+        if (id != -1)
+        {
+            _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;
+            _context.Response.StatusCode = 201;
+        }
+        else
+        {
+            _context.Response.StatusCode = 500;
+            _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
+        }
     }
 
     private void delete(HttpContext _context, int _id)

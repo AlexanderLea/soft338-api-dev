@@ -58,7 +58,45 @@ public class JobApplicationDB
 
     public static JobApplication get(int _id)
     {
-        throw new NotImplementedException();
+        JobApplication temp = new JobApplication();
+
+        SqlConnection con = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("SELECT * FROM JobApplications WHERE ID = @id", con);
+
+        cmd.Parameters.AddWithValue("@id", _id);
+
+        try
+        {
+            using (con)
+            {
+                con.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    temp = new JobApplication(
+                        (string)reader["JobTitle"],
+                        (string)reader["CompanyName"],
+                        (string)reader["JobDescription"],
+                        (string)reader["BusinessSector"],
+                        (string)reader["Postcode"],
+                        (string)reader["Town"],
+                        (string)reader["County"],
+                        (string)reader["RecruiterName"],
+                        (string)reader["RecruiterNumber"],
+                        (string)reader["RecruiterEmail"],
+                        (string)reader["ApplicationNotes"]);
+
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+        }
+
+        return temp;
     }
 
     public static int insert(JobApplication _job)
@@ -100,9 +138,42 @@ public class JobApplicationDB
         return newID;
     }
 
-    public static JobApplication update(JobApplication _job)
+    public static bool update(JobApplication _job, int _id)
     {
-        throw new NotImplementedException();
+        bool successful;
+
+        SqlConnection con = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("UPDATE JobApplications SET [JobTitle] = @JobTitle, [CompanyName] = @CompanyName, "
+            + "[JobDescription] = @JobDescription, [BusinessSector] = @BusinessSector, [Postcode] = @PostCode, [Town], [County], [RecruiterName], [RecruiterNumber], [RecruiterEmail], "
+            + "[ApplicationNotes]) "
+            + "VALUES (, , , , , @Town, @County, @RecruiterName, "
+            + "@RecruiterNumber, @RecruiterEmail, @ApplicationNotes); SELECT CAST(Scope_Identity() as int);", con);
+
+        cmd.Parameters.AddWithValue("@JobTitle", _job.JobTitle);
+        cmd.Parameters.AddWithValue("@CompanyName", _job.CompanyName);
+        cmd.Parameters.AddWithValue("@JobDescription", _job.JobDescription);
+        cmd.Parameters.AddWithValue("@BusinessSector", _job.BusinessSector);
+        cmd.Parameters.AddWithValue("@Postcode", _job.JobPostcode);
+        cmd.Parameters.AddWithValue("@Town", _job.JobTown);
+        cmd.Parameters.AddWithValue("@County", _job.JobCounty);
+        cmd.Parameters.AddWithValue("@RecruiterName", _job.RecruiterName);
+        cmd.Parameters.AddWithValue("@RecruiterNumber", _job.RecruiterNumber);
+        cmd.Parameters.AddWithValue("@RecruiterEmail", _job.RecruiterEmail);
+        cmd.Parameters.AddWithValue("@ApplicationNotes", _job.ApplicationNotes);
+
+        try
+        {
+            using (con)
+            {
+                con.Open();
+
+                cmd.ExecuteNonQuery();
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+        }
     }
 
     public static int delete(int _id)
