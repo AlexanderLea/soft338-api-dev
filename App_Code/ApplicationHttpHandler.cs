@@ -7,12 +7,9 @@ using System.Web;
 
 /// <summary>
 /// HttpHandler handles HTTP Requests aimed at /applications/{id}
-/// </summary>
-/// TODO:
-///     - Comply with best practises
-///     
+/// </summary>   
 
-public class HttpHandler : IHttpHandler
+public class ApplicationHttpHandler : IHttpHandler
 {
     public bool IsReusable { get { return true; } }
 
@@ -130,6 +127,11 @@ public class HttpHandler : IHttpHandler
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
+
+        if (job.JobPostcode != null)
+        {
+            //get location information
+        }
 
         int id = JobApplicationDB.insert(job);
 

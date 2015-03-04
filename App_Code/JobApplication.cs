@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
+using System.Net.Http;
 
 /// <summary>
 /// Summary description for JobApplication
@@ -137,7 +138,7 @@ public class JobApplication
     /// <param name="_recruiterNumber">Phont number of recruiter</param>
     /// <param name="_recruiterEmail">Email address of recruiter</param>
     /// <param name="_applicationNotes">Notes on the job application</param>
-    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector, 
+    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
         string _postcode, string _recruiterName, string _recruiterNumber, string _recruiterEmail,
             string _applicationNotes)
     {
@@ -168,7 +169,7 @@ public class JobApplication
     /// <param name="_recruiterEmail">Email address of recruiter</param>
     /// <param name="_applicationNotes">Notes on the job application</param>
     public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
-        string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber, 
+        string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber,
             string _recruiterEmail, string _applicationNotes)
     {
         this.JobTitle = _jobTitle;
@@ -182,5 +183,34 @@ public class JobApplication
         this.RecruiterNumber = _recruiterNumber;
         this.RecruiterEmail = _recruiterEmail;
         this.ApplicationNotes = _applicationNotes;
+    }
+
+    public void getLocationData()
+    {
+        //string URL = "https://sub.domain.com/objects.json";
+        //string urlParameters = "?api_key=123";
+
+        //HttpClient client = new HttpClient();
+        //client.BaseAddress = new Uri(URL);
+
+        //// Add an Accept header for JSON format.
+        //client.DefaultRequestHeaders.Accept.Add(
+        //new MediaTypeWithQualityHeaderValue("application/json"));
+
+        //// List data response.
+        //HttpResponseMessage response = client.GetAsync(urlParameters).Result;  // Blocking call!
+        //if (response.IsSuccessStatusCode)
+        //{
+        //    // Parse the response body. Blocking!
+        //    var dataObjects = response.Content.ReadAsAsync<IEnumerable<DataObject>>().Result;
+        //    foreach (var d in dataObjects)
+        //    {
+        //        Console.WriteLine("{0}", d.Name);
+        //    }
+        //}
+        //else
+        //{
+        //    Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
+        //}  
     }
 }
