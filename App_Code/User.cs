@@ -39,4 +39,13 @@ public class User
         this.Email = _email;
         this.Key = _key;
 	}
+
+    public static bool isAuthenticated(string _key)
+    {
+        if (UserDB.getUserFromKey(_key) != -1)
+            return true;
+        else
+            return false;
+
+    }
 }

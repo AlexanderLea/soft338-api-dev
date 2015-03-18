@@ -78,6 +78,37 @@ public class UserDB
         return temp;
     }
 
+    public static int getUserFromKey(string _apiKey)
+    {
+        int id = -1;
+
+        SqlConnection con = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("SELECT ID FROM Users WHERE ApiKey = @key", con);
+
+        cmd.Parameters.AddWithValue("@key", _apiKey);
+
+        try
+        {
+            using (con)
+            {
+                con.Open();
+
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    id = (int)reader["ID"];
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+        }
+
+        return id;
+    }
+
     public static int insert(User _user)
     {
         //Generate API key

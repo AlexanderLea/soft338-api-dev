@@ -26,49 +26,64 @@ public class ApplicationHttpHandler : IHttpHandler
 
         UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
 
-        if (matchResults != null) //must have an ID
+        if (request.Headers["Application-ApiKey"] != null)
         {
-            string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
-            int id;
-
-            if (int.TryParse(strID, out id))
+            if (User.isAuthenticated(request.Headers.GetValues("Application-ApiKey").First()))
             {
-                switch (request.HttpMethod.ToLower())
+
+                if (matchResults != null) //must have an ID
                 {
-                    case "get":
-                        //get individual
-                        get(_context, id);
-                        break;
-                    case "put":
-                        //update individual
-                        update(_context, id);
-                        break;
-                    case "delete":
-                        //delete individual
-                        delete(_context, id);
-                        break;
-                    default:
-                        _context.Response.StatusCode = 405;
-                        break;
+                    string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
+                    int id;
+
+                    if (int.TryParse(strID, out id))
+                    {
+                        switch (request.HttpMethod.ToLower())
+                        {
+                            case "get":
+                                //get individual
+                                get(_context, id);
+                                break;
+                            case "put":
+                                //update individual
+                                update(_context, id);
+                                break;
+                            case "delete":
+                                //delete individual
+                                delete(_context, id);
+                                break;
+                            default:
+                                _context.Response.StatusCode = 405;
+                                break;
+                        }
+                    }
+                }
+                else //default
+                {
+                    switch (request.HttpMethod.ToLower())
+                    {
+                        case "get":
+                            //get list
+                            getAll(_context);
+                            break;
+                        case "post":
+                            //insert
+                            insert(_context);
+                            break;
+                        default:
+                            _context.Response.StatusCode = 405;
+                            break;
+                    }
                 }
             }
-        }
-        else //default
-        {
-            switch (request.HttpMethod.ToLower())
+            else
             {
-                case "get":
-                    //get list
-                    getAll(_context);
-                    break;
-                case "post":
-                    //insert
-                    insert(_context);
-                    break;
-                default:
-                    _context.Response.StatusCode = 405;
-                    break;
+                _context.Response.StatusCode = 401;
             }
+        }
+        else
+        {
+            _context.Response.StatusCode = 401;
         }
     }
 
@@ -172,7 +187,7 @@ public class ApplicationHttpHandler : IHttpHandler
         bool success = JobApplicationDB.delete(_id);
 
         if (success)
-        {           
+        {
             _context.Response.StatusCode = 204;
         }
         else
