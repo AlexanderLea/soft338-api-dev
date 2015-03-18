@@ -80,10 +80,11 @@ public class UserDB
 
     public static int insert(User _user)
     {
+        //Generate API key
         int newID = -1;
 
         SqlConnection con = new SqlConnection(connectionString);
-        SqlCommand cmd = new SqlCommand("INSERT INTO Users ([Email], [ApiKey]"
+        SqlCommand cmd = new SqlCommand("INSERT INTO Users ([Email], [ApiKey])"
             + "VALUES (@Email, @ApiKey); SELECT CAST(Scope_Identity() as int);", con);
 
         cmd.Parameters.AddWithValue("@Email", _user.Email);
@@ -102,6 +103,7 @@ public class UserDB
         {
             ErrorMessage = e.Message;
         }
+
         return newID;
     }
 
@@ -110,22 +112,9 @@ public class UserDB
         bool successful;
 
         SqlConnection con = new SqlConnection(connectionString);
-        SqlCommand cmd = new SqlCommand("UPDATE JobApplications SET [JobTitle] = @JobTitle, [CompanyName] = @CompanyName, "
-            + "[JobDescription] = @JobDescription, [BusinessSector] = @BusinessSector, [Postcode] = @PostCode, [Town] = @Town, "
-            + "[County] = @County, [RecruiterName] = @RecruiterName, [RecruiterNumber] = @RecruiterNumber, [RecruiterEmail] = @RecruiterEmail, "
-            + "[ApplicationNotes] =  @ApplicationNotes WHERE [ID] = @ID", con);
+        SqlCommand cmd = new SqlCommand("UPDATE Users SET [Email] = @Email WHERE [ID] = @ID", con);
 
-        cmd.Parameters.AddWithValue("@JobTitle", _job.JobTitle);
-        cmd.Parameters.AddWithValue("@CompanyName", _job.CompanyName);
-        cmd.Parameters.AddWithValue("@JobDescription", _job.JobDescription);
-        cmd.Parameters.AddWithValue("@BusinessSector", _job.BusinessSector);
-        cmd.Parameters.AddWithValue("@Postcode", _job.JobPostcode);
-        cmd.Parameters.AddWithValue("@Town", _job.JobTown);
-        cmd.Parameters.AddWithValue("@County", _job.JobCounty);
-        cmd.Parameters.AddWithValue("@RecruiterName", _job.RecruiterName);
-        cmd.Parameters.AddWithValue("@RecruiterNumber", _job.RecruiterNumber);
-        cmd.Parameters.AddWithValue("@RecruiterEmail", _job.RecruiterEmail);
-        cmd.Parameters.AddWithValue("@ApplicationNotes", _job.ApplicationNotes);
+        cmd.Parameters.AddWithValue("@Email", _user.Email);
         cmd.Parameters.AddWithValue("@ID", _id);
 
         try

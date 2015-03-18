@@ -122,17 +122,19 @@ public class UserHttpHandler : IHttpHandler
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(User));
 
         User user = (User)json.ReadObject(_context.Request.InputStream);
+        user.Key = Guid.NewGuid().ToString();
 
         int id = UserDB.insert(user);
 
         if (id != -1)
         {
             _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/users/" + id;
+            outputJson(_context, user, json);
             _context.Response.StatusCode = 201;
         }
         else
         {
-            _context.Response.StatusCode = 500;
+            _context.Response.StatusCode = 422;
             _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
         }
     }
@@ -148,7 +150,7 @@ public class UserHttpHandler : IHttpHandler
         if (success)
         {
             _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + _id;
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 200;
         }
         else
         {

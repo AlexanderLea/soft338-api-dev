@@ -158,7 +158,7 @@ public class ApplicationHttpHandler : IHttpHandler
         if (success)
         {
             _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + _id;
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 200;
         }
         else
         {
