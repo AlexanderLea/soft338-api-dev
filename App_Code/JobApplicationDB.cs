@@ -32,6 +32,7 @@ public class JobApplicationDB
                 while (reader.Read())
                 {
                     JobApplication temp = new JobApplication(
+                        (int)reader["ID"],
                         (string)reader["JobTitle"],
                         (string)reader["CompanyName"],
                         (string)reader["JobDescription"],
@@ -76,6 +77,7 @@ public class JobApplicationDB
                 while (reader.Read())
                 {
                     temp = new JobApplication(
+                        (int)reader["ID"],
                         (string)reader["JobTitle"],
                         (string)reader["CompanyName"],
                         (string)reader["JobDescription"],

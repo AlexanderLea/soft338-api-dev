@@ -12,6 +12,15 @@ using System.Net.Http;
 [DataContract]
 public class JobApplication
 {
+    //Job Id
+    private int _id;
+    [DataMember]
+    public int Id
+    {
+        get { return _id; }
+        set { _id = value; }
+    }
+
     //Job Title
     private string _jobTitle;
     [DataMember]
@@ -138,17 +147,18 @@ public class JobApplication
     /// <param name="_recruiterNumber">Phont number of recruiter</param>
     /// <param name="_recruiterEmail">Email address of recruiter</param>
     /// <param name="_applicationNotes">Notes on the job application</param>
-    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
-        string _postcode, string _recruiterName, string _recruiterNumber, string _recruiterEmail,
-            string _applicationNotes)
+    public JobApplication(int _id, string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
+         string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber,
+             string _recruiterEmail, string _applicationNotes)
     {
+        this.Id = _id;
         this.JobTitle = _jobTitle;
         this.JobDescription = _jobDesc;
         this.CompanyName = _companyName;
         this.BusinessSector = _businessSector;
         this.JobPostcode = _postcode;
-        this.JobTown = "TODO";
-        this.JobCounty = "TODO";
+        this.JobTown = _town;
+        this.JobCounty = _county;
         this.RecruiterName = _recruiterName;
         this.RecruiterNumber = _recruiterNumber;
         this.RecruiterEmail = _recruiterEmail;
