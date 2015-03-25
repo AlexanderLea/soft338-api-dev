@@ -26,6 +26,8 @@ public class ApplicationHttpHandler : IHttpHandler
 
         UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
 
+
+        //TODO: I don't like this - too many if statements
         if (request.Headers["Application-ApiKey"] != null)
         {
             if (User.isAuthenticated(request.Headers.GetValues("Application-ApiKey").First()))
