@@ -129,12 +129,14 @@ public class JobApplication
         set { _applicationNotes = value; }
     }
 
-    public JobApplication()
+    private int _userID;
+    [DataMember]
+    public int UserID
     {
-        //
-        // TODO: Add constructor logic here
-        //
+        get { return _userID; }
+        set { _userID = value; }
     }
+
 
     /// <summary>
     /// Constructor without town info, for creating applications from user input
@@ -149,7 +151,7 @@ public class JobApplication
     /// <param name="_applicationNotes">Notes on the job application</param>
     public JobApplication(int _id, string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
          string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber,
-             string _recruiterEmail, string _applicationNotes)
+             string _recruiterEmail, string _applicationNotes, int _userid)
     {
         this.Id = _id;
         this.JobTitle = _jobTitle;
@@ -163,36 +165,7 @@ public class JobApplication
         this.RecruiterNumber = _recruiterNumber;
         this.RecruiterEmail = _recruiterEmail;
         this.ApplicationNotes = _applicationNotes;
-    }
-
-    /// <summary>
-    /// Constructor with all params, for pulling info from database
-    /// </summary>
-    /// <param name="_jobTitle">Title of job</param>
-    /// <param name="_companyName">Name of Company</param>
-    /// <param name="_businessSector">Business Sector in which the company operates</param>
-    /// <param name="_postcode">Job location postcode</param>
-    /// <param name="_town">Town in which the job is based</param>
-    /// <param name="_county">County in which the job is based</param>
-    /// <param name="_recruiterName">Name of recruiting peron</param>
-    /// <param name="_recruiterNumber">Phont number of recruiter</param>
-    /// <param name="_recruiterEmail">Email address of recruiter</param>
-    /// <param name="_applicationNotes">Notes on the job application</param>
-    public JobApplication(string _jobTitle, string _jobDesc, string _companyName, string _businessSector,
-        string _postcode, string _town, string _county, string _recruiterName, string _recruiterNumber,
-            string _recruiterEmail, string _applicationNotes)
-    {
-        this.JobTitle = _jobTitle;
-        this.JobDescription = _jobDesc;
-        this.CompanyName = _companyName;
-        this.BusinessSector = _businessSector;
-        this.JobPostcode = _postcode;
-        this.JobTown = _town;
-        this.JobCounty = _county;
-        this.RecruiterName = _recruiterName;
-        this.RecruiterNumber = _recruiterNumber;
-        this.RecruiterEmail = _recruiterEmail;
-        this.ApplicationNotes = _applicationNotes;
+        this.UserID = _userid;
     }
 
     public void getLocationData()

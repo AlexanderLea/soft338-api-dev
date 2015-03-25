@@ -26,13 +26,15 @@ public class ApplicationHttpHandler : IHttpHandler
 
         UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
 
+        string apiKey;
 
         //TODO: I don't like this - too many if statements
         if (request.Headers["Application-ApiKey"] != null)
         {
-            if (User.isAuthenticated(request.Headers.GetValues("Application-ApiKey").First()))
-            {
+            apiKey = request.Headers.GetValues("Application-ApiKey").First();
 
+            if (User.isAuthenticated(apiKey))
+            {
                 if (matchResults != null) //must have an ID
                 {
                     string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
@@ -70,7 +72,7 @@ public class ApplicationHttpHandler : IHttpHandler
                             break;
                         case "post":
                             //insert
-                            insert(_context);
+                            insert(_context, apiKey);
                             break;
                         default:
                             _context.Response.StatusCode = 405;
@@ -139,16 +141,13 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
-    private void insert(HttpContext _context)
+    private void insert(HttpContext _context, string _apiKey)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
 
-        if (job.JobPostcode != null)
-        {
-            //get location information
-        }
+        job.UserID = UserDB.getUserFromKey(_apiKey);
 
         int id = JobApplicationDB.insert(job);
 

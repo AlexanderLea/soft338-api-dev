@@ -20,7 +20,6 @@ public class JobApplicationDB
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("SELECT * FROM JobApplications", con);
 
-
         try
         {
             using (con)
@@ -42,8 +41,9 @@ public class JobApplicationDB
                         (string)reader["County"],
                         (string)reader["RecruiterName"],
                         (string)reader["RecruiterNumber"],
-                        (string)reader["RecruiterEmail"],
-                        (string)reader["ApplicationNotes"]);
+                        (string)reader["RecruiterEmail"],                        
+                        (string)reader["ApplicationNotes"],
+                        (int)reader["UserID"]); 
 
                     applications.Add(temp);
                 }
@@ -88,7 +88,8 @@ public class JobApplicationDB
                         (string)reader["RecruiterName"],
                         (string)reader["RecruiterNumber"],
                         (string)reader["RecruiterEmail"],
-                        (string)reader["ApplicationNotes"]);
+                        (string)reader["ApplicationNotes"], 
+                        (int)reader["UserID"]);
                 }
             }
         }
@@ -107,9 +108,9 @@ public class JobApplicationDB
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("INSERT INTO JobApplications ([JobTitle], [CompanyName], [JobDescription], "
             + "[BusinessSector], [Postcode], [Town], [County], [RecruiterName], [RecruiterNumber], [RecruiterEmail], "
-            + "[ApplicationNotes]) "
+            + "[ApplicationNotes], [UserID]) "
             + "VALUES (@JobTitle, @CompanyName, @JobDescription, @BusinessSector, @PostCode, @Town, @County, @RecruiterName, "
-            + "@RecruiterNumber, @RecruiterEmail, @ApplicationNotes); SELECT CAST(Scope_Identity() as int);", con);
+            + "@RecruiterNumber, @RecruiterEmail, @ApplicationNotes, @UserID); SELECT CAST(Scope_Identity() as int);", con);
 
         cmd.Parameters.AddWithValue("@JobTitle", _job.JobTitle);
         cmd.Parameters.AddWithValue("@CompanyName", _job.CompanyName);
@@ -122,6 +123,7 @@ public class JobApplicationDB
         cmd.Parameters.AddWithValue("@RecruiterNumber", _job.RecruiterNumber);
         cmd.Parameters.AddWithValue("@RecruiterEmail", _job.RecruiterEmail);
         cmd.Parameters.AddWithValue("@ApplicationNotes", _job.ApplicationNotes);
+        cmd.Parameters.AddWithValue("@UserID", _job.UserID);
 
         try
         {
