@@ -30,6 +30,7 @@ public class UserDB
                 while (reader.Read())
                 {
                     User temp = new User(
+                        (int)reader["ID"],
                         (string)reader["Email"],
                         (string)reader["ApiKey"]);
 
@@ -65,6 +66,7 @@ public class UserDB
                 while (reader.Read())
                 {
                     temp = new User(
+                        (int)reader["ID"],
                         (string)reader["Email"],
                         (string)reader["ApiKey"]);
                 }
