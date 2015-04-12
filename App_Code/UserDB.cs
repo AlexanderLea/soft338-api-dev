@@ -111,11 +111,8 @@ public class UserDB
         return id;
     }
 
-    public static int insert(User _user)
+    public static User insert(User _user)
     {
-        //Generate API key
-        int newID = -1;
-
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("INSERT INTO Users ([Email], [ApiKey])"
             + "VALUES (@Email, @ApiKey); SELECT CAST(Scope_Identity() as int);", con);
@@ -129,15 +126,16 @@ public class UserDB
             {
                 con.Open();
 
-                newID = (int)cmd.ExecuteScalar();
+                _user.Id = (int)cmd.ExecuteScalar();
             }
         }
         catch (Exception e)
         {
             ErrorMessage = e.Message;
+            _user = null;
         }
 
-        return newID;
+        return _user;
     }
 
     public static bool update(User _user, int _id)

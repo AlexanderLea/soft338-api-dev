@@ -181,7 +181,7 @@ public class ApplicationHttpHandler : IHttpHandler
 
     private void update(HttpContext _context, int _id)
     {
-        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(IEnumerable<JobApplication>))
+        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(IEnumerable<JobApplication>));
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
 
         if (isPostcodeValid(job))
@@ -210,7 +210,7 @@ public class ApplicationHttpHandler : IHttpHandler
 
         if (success)
         {
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 200;
         }
         else
         {
