@@ -101,10 +101,8 @@ public class JobApplicationDB
         return temp;
     }
 
-    public static int insert(JobApplication _job)
+    public static JobApplication insert(JobApplication _job)
     {
-        int newID = -1;
-
         SqlConnection con = new SqlConnection(connectionString);
         SqlCommand cmd = new SqlCommand("INSERT INTO JobApplications ([JobTitle], [CompanyName], [JobDescription], "
             + "[BusinessSector], [Postcode], [Town], [County], [RecruiterName], [RecruiterNumber], [RecruiterEmail], "
@@ -131,14 +129,15 @@ public class JobApplicationDB
             {
                 con.Open();
 
-                newID = (int)cmd.ExecuteScalar();
+                _job.Id = (int)cmd.ExecuteScalar();
             }
         }
         catch (Exception e)
         {
             ErrorMessage = e.Message;
+            _job = null;
         }
-        return newID;
+        return _job;
     }
 
     public static bool update(JobApplication _job, int _id)
