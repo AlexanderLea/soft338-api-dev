@@ -138,7 +138,7 @@ public class UserHttpHandler : IHttpHandler
         User user = (User)json.ReadObject(_context.Request.InputStream);
 
         bool success = UserDB.update(user, _id);
-
+        user.Id = _id;
         if (success)
         {
             Utils.outputJson(_context, user, json);

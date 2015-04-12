@@ -19,15 +19,12 @@ public class ApplicationHttpHandler : IHttpHandler
     {
         HttpRequest request = _context.Request;
 
-        //get folder bit of path
-        Uri uri = new Uri(request.Url.AbsoluteUri);
-
-
-        //THIS bit isn't necessary
-        Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
+        //
+        //Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
+        Uri baseAddress = new Uri("http://localhost:13946/");
         UriTemplate idTemplate = new UriTemplate("applications/{id}");
 
-        UriTemplateMatch matchResults = idTemplate.Match(baseAddress, uri);
+        UriTemplateMatch matchResults = idTemplate.Match(baseAddress, new Uri(request.Url.AbsoluteUri));
 
         string apiKey = Utils.isAuthenticated(request);
 
@@ -35,30 +32,35 @@ public class ApplicationHttpHandler : IHttpHandler
         {
             if (matchResults != null) //must have an ID
             {
-                int id;
-
-                if (int.TryParse(
-                    matchResults.BoundVariables.GetValues(0).First().ToString()
-                    , out id))
+                try
                 {
-                    switch (request.HttpMethod.ToLower())
+                    int id = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString()));
+
+                    if (id > 0)
                     {
-                        case "get":
-                            //get individual
-                            get(_context, id);
-                            break;
-                        case "put":
-                            //update individual
-                            update(_context, id);
-                            break;
-                        case "delete":
-                            //delete individual
-                            delete(_context, id);
-                            break;
-                        default:
-                            _context.Response.StatusCode = 405;
-                            break;
+                        switch (request.HttpMethod.ToLower())
+                        {
+                            case "get":
+                                //get individual
+                                get(_context, id);
+                                break;
+                            case "put":
+                                //update individual
+                                update(_context, id);
+                                break;
+                            case "delete":
+                                //delete individual
+                                delete(_context, id);
+                                break;
+                            default:
+                                _context.Response.StatusCode = 405;
+                                break;
+                        }
                     }
+                }
+                catch
+                {
+                    _context.Response.StatusCode = 400;
                 }
             }
             else //default
@@ -181,9 +183,9 @@ public class ApplicationHttpHandler : IHttpHandler
 
     private void update(HttpContext _context, int _id)
     {
-        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(IEnumerable<JobApplication>));
+        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
-
+        job.Id = _id;
         if (isPostcodeValid(job))
         {
             bool success = JobApplicationDB.update(job, _id);
