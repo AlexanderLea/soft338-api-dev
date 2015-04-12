@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Web;
+using System.Web.Script.Serialization;
 
 /// <summary>
 /// HttpHandler handles HTTP Requests aimed at /applications/{id}
@@ -20,6 +22,8 @@ public class ApplicationHttpHandler : IHttpHandler
         //get folder bit of path
         Uri uri = new Uri(request.Url.AbsoluteUri);
 
+
+        //THIS bit isn't necessary
         Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
         UriTemplate idTemplate = new UriTemplate("applications/{id}");
         UriTemplate defaultTemplate = new UriTemplate("applications");
@@ -142,24 +146,57 @@ public class ApplicationHttpHandler : IHttpHandler
     }
 
     private void insert(HttpContext _context, string _apiKey)
-    {
-        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
+    {       
+        DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));        
+
+        //use different serializer, because it doesn't require everything to be xml
+        var serializer = new JavaScriptSerializer();
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
+        PostcodeCheck pcheck = new PostcodeCheck();
 
-        job.UserID = UserDB.getUserFromKey(_apiKey);
+        //check if postcode is valid
+        string apiUrl = "http://api.postcodes.io/postcodes/?/validate";
+        apiUrl = apiUrl.Replace("?", job.JobPostcode);
+        
+        using (var client = new WebClient())
+        {            
+            client.Headers.Add("Content-Type", "application/json");
 
-        int id = JobApplicationDB.insert(job);
+            Stream data = client.OpenRead(apiUrl);
+            StreamReader reader = new StreamReader(data);
+            string s = reader.ReadToEnd();
+           
+            //PostcodeCheck temp = new PostcodeCheck(200, "false");
 
-        if (id != -1)
+            //string js = serializer.Serialize(temp);
+            
+            pcheck = serializer.Deserialize<PostcodeCheck>(s);
+
+            data.Close();
+            reader.Close();
+        }
+
+        if (pcheck.result == true && pcheck.status == 200)
         {
-            _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;
-            _context.Response.StatusCode = 201;
+            job.UserID = UserDB.getUserFromKey(_apiKey);
+
+            int id = JobApplicationDB.insert(job);
+
+            if (id != -1)
+            {
+               // _context.Response.StatusDescription = "http://xserve.uopnet.plymouth.ac.uk/modules/soft338/alea/applications/" + id;
+                _context.Response.StatusCode = 201;
+            }
+            else
+            {
+                _context.Response.StatusCode = 500;
+               // _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
+            }
         }
         else
         {
-            _context.Response.StatusCode = 500;
-            _context.Response.StatusDescription = JobApplicationDB.ErrorMessage;
+            _context.Response.StatusCode = 400;
         }
     }
 

@@ -9,33 +9,18 @@ using System.Web;
 /// </summary>
 public class PostcodeCheck
 {
-    private int _status;
-    [DataMember]
-    public int Status
-    {
-        get { return _status; }
-        set { _status = value; }
-    }
+    public int status { get; set; }
 
-    private string _result;
-    [DataMember]
-    public string Result
-    {
-        get { return _result; }
-        set { _result = value; }
-    }
+    public bool result { get; set; }
 
     public PostcodeCheck()
-	{
-		//
-		// TODO: Add constructor logic here
-		//
+	{		
 	}
 
-    public PostcodeCheck(string _status, string _result)
+    public PostcodeCheck(int _status, bool _result)
     {
-        this.Status = _status;
-        this.Result = _result;
+        this.status = _status;
+        this.result = _result;
     }
 
 
