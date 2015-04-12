@@ -33,8 +33,8 @@ public class JobApplicationDB
                     JobApplication temp = new JobApplication(
                         (int)reader["ID"],
                         (string)reader["JobTitle"],
-                        (string)reader["CompanyName"],
                         (string)reader["JobDescription"],
+                        (string)reader["CompanyName"],                        
                         (string)reader["BusinessSector"],
                         (string)reader["Postcode"],
                         (string)reader["Town"],
@@ -77,19 +77,19 @@ public class JobApplicationDB
                 while (reader.Read())
                 {
                     temp = new JobApplication(
-                        (int)reader["ID"],
-                        (string)reader["JobTitle"],
-                        (string)reader["CompanyName"],
-                        (string)reader["JobDescription"],
-                        (string)reader["BusinessSector"],
-                        (string)reader["Postcode"],
-                        (string)reader["Town"],
-                        (string)reader["County"],
-                        (string)reader["RecruiterName"],
-                        (string)reader["RecruiterNumber"],
-                        (string)reader["RecruiterEmail"],
-                        (string)reader["ApplicationNotes"], 
-                        (int)reader["UserID"]);
+                       (int)reader["ID"],
+                       (string)reader["JobTitle"],
+                       (string)reader["JobDescription"],
+                       (string)reader["CompanyName"],
+                       (string)reader["BusinessSector"],
+                       (string)reader["Postcode"],
+                       (string)reader["Town"],
+                       (string)reader["County"],
+                       (string)reader["RecruiterName"],
+                       (string)reader["RecruiterNumber"],
+                       (string)reader["RecruiterEmail"],
+                       (string)reader["ApplicationNotes"],
+                       (int)reader["UserID"]);
                 }
             }
         }
