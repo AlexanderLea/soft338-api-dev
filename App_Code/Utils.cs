@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Runtime.Serialization.Json;
 using System.Web;
+using System.Web.Script.Serialization;
 
 /// <summary>
 /// Summary description for Utils
@@ -46,6 +48,36 @@ public class Utils
         _context.Response.ContentType = "application/json";
 
         _jsonData.WriteObject(outputStream, d);
+    }
+
+    public static bool isPostcodeValid(JobApplication _job)
+    {
+        //use different serializer, because it doesn't require everything to be xml
+        var serializer = new JavaScriptSerializer();
+        PostcodeCheck pcheck = new PostcodeCheck();
+
+        //check if postcode is valid
+        string apiUrl = "http://api.postcodes.io/postcodes/?/validate";
+        apiUrl = apiUrl.Replace("?", _job.JobPostcode);
+
+        using (var client = new WebClient())
+        {
+            client.Headers.Add("Content-Type", "application/json");
+
+            Stream data = client.OpenRead(apiUrl);
+            StreamReader reader = new StreamReader(data);
+            string s = reader.ReadToEnd();
+
+            pcheck = serializer.Deserialize<PostcodeCheck>(s);
+
+            data.Close();
+            reader.Close();
+        }
+
+        if (pcheck.result == true && pcheck.status == 200)
+            return true;
+        else
+            return false;
     }
 
 }

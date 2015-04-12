@@ -169,7 +169,30 @@ public class UserDB
 
     public static bool delete(int _id)
     {
-        throw new NotImplementedException();
+        bool successful;
+
+        SqlConnection con = new SqlConnection(connectionString);
+        SqlCommand cmd = new SqlCommand("DELETE FROM Users WHERE [ID] = @ID", con);
+
+        cmd.Parameters.AddWithValue("@ID", _id);
+
+        try
+        {
+            using (con)
+            {
+                con.Open();
+
+                cmd.ExecuteNonQuery();
+                successful = true;
+            }
+        }
+        catch (Exception e)
+        {
+            ErrorMessage = e.Message;
+            successful = false;
+        }
+
+        return successful;
     }
 
 

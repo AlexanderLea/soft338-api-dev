@@ -156,7 +156,7 @@ public class UserHttpHandler : IHttpHandler
 
         if (success)
         {
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 200;
         }
         else
         {

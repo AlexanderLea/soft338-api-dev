@@ -18,10 +18,10 @@ public class ApplicationHttpHandler : IHttpHandler
     public void ProcessRequest(HttpContext _context)
     {
         HttpRequest request = _context.Request;
-
-        //
-        //Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
-        Uri baseAddress = new Uri("http://localhost:13946/");
+       
+        Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
+        //for local debugging
+        //Uri baseAddress = new Uri("http://localhost:13946/");
         UriTemplate idTemplate = new UriTemplate("applications/{id}");
 
         UriTemplateMatch matchResults = idTemplate.Match(baseAddress, new Uri(request.Url.AbsoluteUri));
@@ -34,7 +34,7 @@ public class ApplicationHttpHandler : IHttpHandler
             {
                 try
                 {
-                    int id = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString()));
+                    int id = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString());
 
                     if (id > 0)
                     {
@@ -129,7 +129,7 @@ public class ApplicationHttpHandler : IHttpHandler
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
         
-        if (isPostcodeValid(job))
+        if (Utils.isPostcodeValid(job))
         {
             job.UserID = UserDB.getUserFromKey(_apiKey);
 
@@ -151,42 +151,12 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
-    private bool isPostcodeValid(JobApplication _job)
-    {
-        //use different serializer, because it doesn't require everything to be xml
-        var serializer = new JavaScriptSerializer();
-        PostcodeCheck pcheck = new PostcodeCheck();
-
-        //check if postcode is valid
-        string apiUrl = "http://api.postcodes.io/postcodes/?/validate";
-        apiUrl = apiUrl.Replace("?", _job.JobPostcode);
-
-        using (var client = new WebClient())
-        {
-            client.Headers.Add("Content-Type", "application/json");
-
-            Stream data = client.OpenRead(apiUrl);
-            StreamReader reader = new StreamReader(data);
-            string s = reader.ReadToEnd();
-
-            pcheck = serializer.Deserialize<PostcodeCheck>(s);
-
-            data.Close();
-            reader.Close();
-        }
-
-        if (pcheck.result == true && pcheck.status == 200)
-            return true;
-        else
-            return false;
-    }
-
     private void update(HttpContext _context, int _id)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
         job.Id = _id;
-        if (isPostcodeValid(job))
+        if (Utils.isPostcodeValid(job))
         {
             bool success = JobApplicationDB.update(job, _id);
 
