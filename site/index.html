@@ -59,10 +59,15 @@
         <h2>Alexander Lea</h2>
         <div class="row">
           <div class="col-md-6">
+            <p>
+              This API allows a user to be created, and then job applications associated with that user. When an application is created or updated, the API checks if the postcode entered is valid or not, and either rejects the operation if it's invalid, or continues if valid.
+            </p>
+          </div>
+          <div class="col-md-6">
             <h3>To Do:</h3>
               <ul>
                   <li>Limit access application requests to the user that created them</li>
-                  <li>Return 404 if resource doesn't exist</li>
+                  <li>Unauthorised to create new user! - this isn't right...</li>
               </ul>
           </div>
         </div>
@@ -76,7 +81,76 @@
       <div class="row">
             <div class="col-md-12">
                 <h1>Getting Started</h1>
-                
+
+                <h2>Authentication</h2>
+                <p>
+                  In order to use this API, requests must be authenticated using an API key. To get an API key, you must <a href="#postUsers"> submit a POST request to the /users endpoint</a>. The API will respond with your API key.
+                </p> 
+                <p>
+                  To then use other resources, the API key must be included in the header of the request in the following format:
+                  <ul>
+                    <li><strong>Header</strong>: Application-ApiKey</li>
+                    <li><strong>Value</strong>: [key value from previous POST request]</li>
+                  </ul>
+                </p>
+
+                <h2>Resources</h2>
+                <table class="table">
+                  <tr>
+                    <th>Resource</th>
+                    <th>Users</th>
+                    <th>Application</th>
+                  </tr>
+                  <tr>
+                    <td>DELETE</td>
+                    <td><a href="#deleteUsers">/users/{id}</a></td>
+                    <td><a href="#deleteApplications">/applications/{id}</a></td>
+                  </tr>
+                  <tr>
+                    <td>GET</td>
+                    <td><a href="#getUsers">/users</a></td>
+                    <td><a href="#getApplications">/applications</a></td>
+                  </tr>
+                  <tr>
+                    <td>GET</td>
+                    <td><a href="#getUsersID">/users/{id}</a></td>
+                    <td><a href="#getApplicationsID">/applications/{id}</a></td>
+                  </tr>
+                  <tr>
+                    <td>POST</td>
+                    <td><a href="#postUsers">/users</a></td>
+                    <td><a href="#postApplications">/applications/</a></td>
+                  </tr>
+                  <tr>
+                    <td>PUT</td>
+                    <td><a href="#putUsers">/users/{id}</a></td>
+                    <td><a href="#putApplications">/applications/{id}</a></td>
+                  </tr>
+                </table>
+
+                <h2>Errors</h2>
+                <ul>
+                  <li>
+                    <strong>400 Bad Request</strong></br>
+                    &nbsp There was an error with the request data provided
+                  </li>
+                  <li>
+                    <strong>401 Unauthorized</strong></br>
+                    &nbsp The API key is either not provided, or is incorrect
+                  </li>
+                  <li>
+                   <strong> 404 Not Found</strong></br>
+                    &nbsp The resource does not exist
+                  </li>
+                  <li>
+                    <strong>405 Method Not Allowed</strong></br>
+                    &nbsp The utilised HTTP method is not allowed for this endpoint
+                  </li>
+                  <li>
+                    <strong>422 Unprocessable Entity</strong></br>
+                    &nbsp The data provided is invalid (perhaps the postcode is invalid)
+                  </li>             
+                </ul>
             </div>
         </div>
 
@@ -88,134 +162,98 @@
 
                 <!-- Get /users -->
                 <p>
-                    <h3>GET /users</h3>
-
+                    <h3 id="getUsers">GET /users</h3>
+                      <h4>Description</h4>
+                        Lists all users in the system. Must be authenticated in order to access this resource.
                       <h4>Response</h4>
                       <strong>Response Format</strong> </br>
                       <div class="panel panel-default">
                         <div class="panel-heading">application/json</div>
                         <div class="panel-body">
-                          json json json
+                          [
+                            {
+                                "Email": "user@email",
+                                "Id": 1,
+                                "Key": "Application-ApiKey"
+                            }, ...
+                          ]
                         </div>
-                      </div>
-
-                      <strong>Status Codes </strong></br>
-                      <table class="table">
-                        <tr>
-                          <th>Code</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
+                      </div>                    
                     </p>
                 </p>
 
                 <!-- Get /users/{id} -->
                 <p>
-                    <h3>GET /users/{id}</h3>
+                  <h3 id="getUsersId">GET /users/{id}</h3>
 
-                    <p>
-                      <h4>Request</h4>
-                      <strong>Parameters</strong> </br>
-                      <table class="table">
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
+                  <h4>Description</h4>
+                  Get a single user from the system. Must be authenticated in order to access this resource.
+                
+                  <h4>Request</h4>
+                  <strong>Parameters</strong> </br>
+                  <table class="table">
+                    <tr>
+                      <th>Name</th>
+                      <th>Description</th>                        
+                    </tr>
+                    <tr>
+                      <td>id</td>
+                      <td>The ID of the user to get</td>                        
+                    </tr>
+                  </table>
 
-                      <strong>Request Format</strong>
-                      <div class="panel panel-default">
-                        <div class="panel-heading">application/json</div>
-                        <div class="panel-body">
-                          json json json
-                        </div>
-                      </div>
-                    </p>
-                    <p>
-                      <h4>Response</h4>
-                      <strong>Response Format</strong> </br>
-                      <div class="panel panel-default">
-                        <div class="panel-heading">application/json</div>
-                        <div class="panel-body">
-                          json json json
-                        </div>
-                      </div>
+                  <h4>Response</h4>
+                  <strong>Response Format</strong> </br>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">application/json</div>
+                    <div class="panel-body">
+                      {
+                        "Email": "user@email",
+                        "Id": 1,
+                        "Key": "Application-ApiKey"
+                      } 
+                    </div>
+                  </div>
 
-                      <strong>Status Codes </strong></br>
-                      <table class="table">
-                        <tr>
-                          <th>Code</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
-                    </p>
                 </p>
                 <!-- POST /users -->
                 <p>
-                    <h3>POST /users</h3>
+                    <h3 id="postUsers">POST /users</h3>
+                    <h4>Description</h4>
+                      Adds a new user to the system.
 
-                    <p>
-                      <h4>Request</h4>
-                      <strong>Parameters</strong> </br>
-                      <table class="table">
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
+                      <h4>Request</h4>                      
 
                       <strong>Request Format</strong>
                       <div class="panel panel-default">
                         <div class="panel-heading">application/json</div>
                         <div class="panel-body">
-                          json json json
+                          {
+                            "Email": "alexander.lea@students.plymouth.ac.uk"
+                          }
                         </div>
                       </div>
-                    </p>
-                    <p>
+
                       <h4>Response</h4>
                       <strong>Response Format</strong> </br>
                       <div class="panel panel-default">
                         <div class="panel-heading">application/json</div>
                         <div class="panel-body">
-                          json json json
+                        {
+                          "Email": "user@email",
+                          "Id": 1,
+                          "Key": "Application-ApiKey"
+                        }
                         </div>
                       </div>
 
-                      <strong>Status Codes </strong></br>
-                      <table class="table">
-                        <tr>
-                          <th>Code</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
                     </p>
                 </p>
                 <!-- PUT /users/{id} -->
                 <p>
-                    <h3>PUT /users/{id}</h3>
-
-                    <p>
+                    <h3 id="putUsers">PUT /users/{id}</h3>
+                      <h4>Description</h4>
+                      Updates a user's records with the data included in the request. Must be authenticated in order to access this resource.
                       <h4>Request</h4>
                       <strong>Parameters</strong> </br>
                       <table class="table">
@@ -224,8 +262,8 @@
                           <th>Description</th>                        
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>                        
+                          <td>id</td>
+                          <td>The ID of the user to update</td>                        
                         </tr>
                       </table>
 
@@ -233,7 +271,10 @@
                       <div class="panel panel-default">
                         <div class="panel-heading">application/json</div>
                         <div class="panel-body">
-                          json json json
+                          {
+                            "Email": "user@email",
+                            "Key": "Application-ApiKey"
+                          }
                         </div>
                       </div>
                     </p>
@@ -243,28 +284,20 @@
                       <div class="panel panel-default">
                         <div class="panel-heading">application/json</div>
                         <div class="panel-body">
-                          json json json
+                          {
+                              "Email": "user@email",
+                              "Id": 4,
+                              "Key": "Application-ApiKey"
+                          }
                         </div>
-                      </div>
-
-                      <strong>Status Codes </strong></br>
-                      <table class="table">
-                        <tr>
-                          <th>Code</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
+                      </div>                      
                     </p>
                 </p>
                 <!-- DELETE /users/{id} -->
                 <p>
-                    <h3>DELETE /users/{id}</h3>
-
-                    <p>
+                    <h3 id="deleteUsers">DELETE /users/{id}</h3>
+                      <h4>Description</h4>
+                      Deletes a user's record. Must be authenticated in order to access this resource.
                       <h4>Request</h4>
                       <strong>Parameters</strong> </br>
                       <table class="table">
@@ -273,45 +306,169 @@
                           <th>Description</th>                        
                         </tr>
                         <tr>
-                          <td></td>
-                          <td></td>                        
+                          <td>id</td>
+                          <td>The ID of the user to delete</td>                        
                         </tr>
                       </table>
 
-                      <strong>Request Format</strong>
-                      <div class="panel panel-default">
-                        <div class="panel-heading">application/json</div>
-                        <div class="panel-body">
-                          json json json
-                        </div>
-                      </div>
-                    </p>
-                    <p>
-                      <h4>Response</h4>
-                      <strong>Response Format</strong> </br>
-                      <div class="panel panel-default">
-                        <div class="panel-heading">application/json</div>
-                        <div class="panel-body">
-                          json json json
-                        </div>
-                      </div>
 
-                      <strong>Status Codes </strong></br>
-                      <table class="table">
-                        <tr>
-                          <th>Code</th>
-                          <th>Description</th>                        
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>                        
-                        </tr>
-                      </table>
+                      <h4>Response</h4>                                            
+                      Returns '204 No Content' if delete is successful.                      
                     </p>
                 </p>
 
                 
                 <h2>Applications</h2>
+              <!-- Get /users -->
+                <p>
+                    <h3 id="getApplications">GET /applications</h3>
+                      <h4>Description</h4>
+                        Lists all applications in the system. Must be authenticated in order to access this resource.
+                      <h4>Response</h4>
+                      <strong>Response Format</strong> </br>
+                      <div class="panel panel-default">
+                        <div class="panel-heading">application/json</div>
+                        <div class="panel-body">
+                          [
+                            {
+                                
+                            }, ...
+                          ]
+                        </div>
+                      </div>                    
+                    </p>
+                </p>
+
+                <!-- Get /applications/{id} -->
+                <p>
+                  <h3 id="getApplicationsID">GET /applications/{id}</h3>
+
+                  <h4>Description</h4>
+                  Get a single application from the system. Must be authenticated in order to access this resource.
+                
+                  <h4>Request</h4>
+                  <strong>Parameters</strong> </br>
+                  <table class="table">
+                    <tr>
+                      <th>Name</th>
+                      <th>Description</th>                        
+                    </tr>
+                    <tr>
+                      <td>id</td>
+                      <td>The ID of the applications to get</td>                        
+                    </tr>
+                  </table>
+
+                  <h4>Response</h4>
+                  <strong>Response Format</strong> </br>
+                  <div class="panel panel-default">
+                    <div class="panel-heading">application/json</div>
+                    <div class="panel-body">
+                      {
+                        
+                      } 
+                    </div>
+                  </div>
+
+                </p>
+                <!-- POST /applications -->
+                <p>
+                    <h3 id="postApplications">POST /applications</h3>
+                    <h4>Description</h4>
+                      Adds a new application to the system.
+
+                      <h4>Request</h4>                      
+
+                      <strong>Request Format</strong>
+                      <div class="panel panel-default">
+                        <div class="panel-heading">application/json</div>
+                        <div class="panel-body">
+                          {
+                            
+                          }
+                        </div>
+                      </div>
+
+                      <h4>Response</h4>
+                      <strong>Response Format</strong> </br>
+                      <div class="panel panel-default">
+                        <div class="panel-heading">application/json</div>
+                        <div class="panel-body">
+                        {
+                          
+                        }
+                        </div>
+                      </div>
+
+                    </p>
+                </p>
+                <!-- PUT /applications/{id} -->
+                <p>
+                    <h3 id="putApplications">PUT /applications/{id}</h3>
+                      <h4>Description</h4>
+                      Updates an application's records with the data included in the request. Must be authenticated in order to access this resource.
+                      <h4>Request</h4>
+                      <strong>Parameters</strong> </br>
+                      <table class="table">
+                        <tr>
+                          <th>Name</th>
+                          <th>Description</th>                        
+                        </tr>
+                        <tr>
+                          <td>id</td>
+                          <td>The ID of the application to update</td>                        
+                        </tr>
+                      </table>
+
+                      <strong>Request Format</strong>
+                      <div class="panel panel-default">
+                        <div class="panel-heading">application/json</div>
+                        <div class="panel-body">
+                          {
+                            
+                          }
+                        </div>
+                      </div>
+                    </p>
+                    <p>
+                      <h4>Response</h4>
+                      Will return Http Status Code 422 if the postcode is invalid, else 200 if all is okay.
+                      <strong>Response Format</strong> </br>
+                      <div class="panel panel-default">
+                        <div class="panel-heading">application/json</div>
+                        <div class="panel-body">
+                          {
+                              
+                          }
+                        </div>
+                      </div>                      
+                    </p>
+                </p>
+                <!-- DELETE /applications/{id} -->
+                <p>
+                    <h3 id="deleteApplications">DELETE /applications/{id}</h3>
+                      <h4>Description</h4>
+                      Deletes a applications's record. Must be authenticated in order to access this resource.
+                      <h4>Request</h4>
+                      <strong>Parameters</strong> </br>
+                      <table class="table">
+                        <tr>
+                          <th>Name</th>
+                          <th>Description</th>                        
+                        </tr>
+                        <tr>
+                          <td>id</td>
+                          <td>The ID of the applications to delete</td>                        
+                        </tr>
+                      </table>
+
+
+                      <h4>Response</h4>                                            
+                      Returns '204 No Content' if delete is successful.                      
+                    </p>
+                </p>
+
+
             </div>
         </div>
       <hr>
