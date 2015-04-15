@@ -34,23 +34,23 @@ public class ApplicationHttpHandler : IHttpHandler
             {
                 try
                 {
-                    int id = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString());
+                    int applicationId = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString());
 
-                    if (id > 0)
+                    if (applicationId > 0)
                     {
                         switch (request.HttpMethod.ToLower())
                         {
                             case "get":
                                 //get individual
-                                get(_context, id);
+                                get(_context, applicationId);
                                 break;
                             case "put":
                                 //update individual
-                                update(_context, id);
+                                update(_context, applicationId);
                                 break;
                             case "delete":
                                 //delete individual
-                                delete(_context, id);
+                                delete(_context, applicationId);
                                 break;
                             default:
                                 _context.Response.StatusCode = 405;
@@ -60,7 +60,7 @@ public class ApplicationHttpHandler : IHttpHandler
                 }
                 catch
                 {
-                    _context.Response.StatusCode = 400;
+                    _context.Response.StatusCode = 404;
                 }
             }
             else //default
@@ -119,7 +119,7 @@ public class ApplicationHttpHandler : IHttpHandler
         }
         else
         {
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 404;
         }
     }
 
@@ -142,12 +142,12 @@ public class ApplicationHttpHandler : IHttpHandler
             }
             else
             {
-                _context.Response.StatusCode = 500;
+                _context.Response.StatusCode = 400;
             }
         }
         else
         {
-            _context.Response.StatusCode = 400;
+            _context.Response.StatusCode = 422;
         }
     }
 
@@ -167,12 +167,12 @@ public class ApplicationHttpHandler : IHttpHandler
             }
             else
             {
-                _context.Response.StatusCode = 500;
+                _context.Response.StatusCode = 400;
             }
         }
         else
         {
-            _context.Response.StatusCode = 400;
+            _context.Response.StatusCode = 422;
         }
     }
 
@@ -186,7 +186,7 @@ public class ApplicationHttpHandler : IHttpHandler
         }
         else
         {
-            _context.Response.StatusCode = 500;
+            _context.Response.StatusCode = 400;
         }
     }
 }

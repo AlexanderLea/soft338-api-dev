@@ -29,29 +29,35 @@ public class UserHttpHandler : IHttpHandler
         {
             if (matchResults != null) //must have an ID
             {
-                string strID = matchResults.BoundVariables.GetValues(0).First().ToString();
-                int id;
-
-                if (int.TryParse(strID, out id))
+                try
                 {
-                    switch (request.HttpMethod.ToLower())
+                    int id = int.Parse(matchResults.BoundVariables.GetValues(0).First().ToString());
+
+                    if (id > 0)
                     {
-                        case "get":
-                            //get individual
-                            get(_context, id);
-                            break;
-                        case "put":
-                            //update individual
-                            update(_context, id);
-                            break;
-                        case "delete":
-                            //delete individual
-                            delete(_context, id);
-                            break;
-                        default:
-                            _context.Response.StatusCode = 405;
-                            break;
+                        switch (request.HttpMethod.ToLower())
+                        {
+                            case "get":
+                                //get individual
+                                get(_context, id);
+                                break;
+                            case "put":
+                                //update individual
+                                update(_context, id);
+                                break;
+                            case "delete":
+                                //delete individual
+                                delete(_context, id);
+                                break;
+                            default:
+                                _context.Response.StatusCode = 405;
+                                break;
+                        }
                     }
+                }
+                catch
+                {
+                    _context.Response.StatusCode = 404;
                 }
             }
             else //default
@@ -70,6 +76,10 @@ public class UserHttpHandler : IHttpHandler
                         break;
                 }
             }
+        }
+        else if(request.HttpMethod.ToLower() == "post")
+        {
+            insert(_context);
         }
         else
         {
@@ -107,7 +117,7 @@ public class UserHttpHandler : IHttpHandler
         }
         else
         {
-            _context.Response.StatusCode = 204;
+            _context.Response.StatusCode = 404;
         }
     }
 
@@ -120,7 +130,7 @@ public class UserHttpHandler : IHttpHandler
 
         user = UserDB.insert(user);
 
-        if (user == null)
+        if (user != null)
         {            
             Utils.outputJson(_context, user, json);
             _context.Response.StatusCode = 201;
@@ -146,7 +156,7 @@ public class UserHttpHandler : IHttpHandler
         }
         else
         {
-            _context.Response.StatusCode = 500;
+            _context.Response.StatusCode = 400;
         }
     }
 
@@ -160,7 +170,7 @@ public class UserHttpHandler : IHttpHandler
         }
         else
         {
-            _context.Response.StatusCode = 500;
+            _context.Response.StatusCode = 400;
         }
     }
 }
