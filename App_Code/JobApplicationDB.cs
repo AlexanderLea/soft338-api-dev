@@ -13,6 +13,10 @@ public class JobApplicationDB
     private static string connectionString = WebConfigurationManager.ConnectionStrings["SOFT338_ConnectionString"].ConnectionString;
     public static string ErrorMessage;
 
+    /// <summary>
+    /// Gets list of job applications from DB
+    /// </summary>
+    /// <returns>List of JobApplications</returns>
     public static List<JobApplication> getList()
     {
         List<JobApplication> applications = new List<JobApplication>();
@@ -57,6 +61,11 @@ public class JobApplicationDB
         return applications;
     }
 
+    /// <summary>
+    /// Get single job application from DB
+    /// </summary>
+    /// <param name="_id">ID of requested job application</param>
+    /// <returns>JobApplication related to the given ID</returns>
     public static JobApplication get(int _id)
     {
         JobApplication temp = null;
@@ -101,6 +110,11 @@ public class JobApplicationDB
         return temp;
     }
 
+    /// <summary>
+    /// Inserts Job Application into database
+    /// </summary>
+    /// <param name="_job">JobApplication to insert</param>
+    /// <returns>Inserted JobApplication (inc. ID)</returns>
     public static JobApplication insert(JobApplication _job)
     {
         SqlConnection con = new SqlConnection(connectionString);
@@ -140,6 +154,12 @@ public class JobApplicationDB
         return _job;
     }
 
+    /// <summary>
+    /// Updates Job Application in database
+    /// </summary>
+    /// <param name="_job">Job Application containing updated values</param>
+    /// <param name="_id">ID of application to update</param>
+    /// <returns></returns>
     public static bool update(JobApplication _job, int _id)
     {
         bool successful;
@@ -182,6 +202,11 @@ public class JobApplicationDB
         return successful;
     }
 
+    /// <summary>
+    /// Deletes Job Application from DB
+    /// </summary>
+    /// <param name="_id">ID of application to delete</param>
+    /// <returns>true if deleted successfull; false otherwise</returns>
     public static bool delete(int _id)
     {
         bool successful;
