@@ -5,7 +5,7 @@ using System.Web;
 using System.Runtime.Serialization;
 
 /// <summary>
-/// Summary description for User
+/// User class to hold information relating to user DB obeject
 /// </summary>
 /// 
 
@@ -43,12 +43,12 @@ public class User
 
     }
 
-	public User(string _email, string _key)
-	{
-        this.Email = _email;
-        this.Key = _key;
-	}
-
+    /// <summary>
+    /// Parameterised constructor
+    /// </summary>
+    /// <param name="_id">ID of user object from DB</param>
+    /// <param name="_email">User's email address</param>
+    /// <param name="_key">User's API key</param>
     public User(int _id, string _email, string _key)
     {
         this.Id = _id;
@@ -56,6 +56,11 @@ public class User
         this.Key = _key;
     }
 
+    /// <summary>
+    /// Coordinates checking if the user is authenticated
+    /// </summary>
+    /// <param name="_key">User's API key</param>
+    /// <returns>bool - true/false depending on authentication status</returns>
     public static bool isAuthenticated(string _key)
     {
         if (UserDB.getUserFromKey(_key) != -1)
