@@ -15,10 +15,19 @@ public class ApplicationHttpHandler : IHttpHandler
 {
     public bool IsReusable { get { return true; } }
 
+    /// <summary>
+    /// Process request method, called by web.config if /applications is hit.
+    /// Coordinates routes through the code, and distributes to following methods
+    /// </summary>
+    /// <param name="_context">HTTPContext of the request</param>
     public void ProcessRequest(HttpContext _context)
     {
         HttpRequest request = _context.Request;
-       
+
+
+        var x = request.Url.AbsoluteUri.Split('/');
+
+
         Uri baseAddress = new Uri("http://xserve.uopnet.plymouth.ac.uk/Modules/SOFT338/alea/");
         //for local debugging
         //Uri baseAddress = new Uri("http://localhost:13946/");
@@ -87,6 +96,11 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates retrieval of all applications from DB and writes JSON 
+    /// to output stream
+    /// </summary>
+    /// <param name="_context">HTTPContext of the request</param>
     private void getAll(HttpContext _context)
     {
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
@@ -105,6 +119,12 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates retrieval of a single application from DB and writes
+    /// JSON to output steam
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of the </param>
     private void get(HttpContext _context, int _id)
     {
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
@@ -123,13 +143,18 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates insertion of a new application into the DB
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_apiKey">API key, to identiy user associated with application</param>
     private void insert(HttpContext _context, string _apiKey)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
 
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
-        
-        if (Utils.isPostcodeValid(job))
+
+        if (job.isPostcodeValid())
         {
             job.UserID = UserDB.getUserFromKey(_apiKey);
 
@@ -151,12 +176,17 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates updation of application
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of application to update</param>
     private void update(HttpContext _context, int _id)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(JobApplication));
         JobApplication job = (JobApplication)json.ReadObject(_context.Request.InputStream);
         job.Id = _id;
-        if (Utils.isPostcodeValid(job))
+        if (job.isPostcodeValid())
         {
             bool success = JobApplicationDB.update(job, _id);
 
@@ -176,6 +206,11 @@ public class ApplicationHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates deletion of a job application
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of application to delete</param>
     private void delete(HttpContext _context, int _id)
     {
         bool success = JobApplicationDB.delete(_id);
