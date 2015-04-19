@@ -6,13 +6,17 @@ using System.Web;
 using System.Web.Configuration;
 
 /// <summary>
-/// Summary description for UserDB
+/// Handles all DB transactions for the User object
 /// </summary>
 public class UserDB
 {
-        private static string connectionString = WebConfigurationManager.ConnectionStrings["SOFT338_ConnectionString"].ConnectionString;
+    private static string connectionString = WebConfigurationManager.ConnectionStrings["SOFT338_ConnectionString"].ConnectionString;
     public static string ErrorMessage;
 
+    /// <summary>
+    /// Gets list of all users from DB
+    /// </summary>
+    /// <returns>List of users</returns>
 	public static List<User> getList(){
         List<User> users = new List<User>();
 
@@ -46,6 +50,11 @@ public class UserDB
         return users;
     }
 
+    /// <summary>
+    /// Gets single user from DB
+    /// </summary>
+    /// <param name="_id">User's ID</param>
+    /// <returns>User related to provided ID</returns>
     public static User get(int _id)
     {
         User temp = null;
@@ -80,6 +89,11 @@ public class UserDB
         return temp;
     }
 
+    /// <summary>
+    /// Gets user ID from application API key
+    /// </summary>
+    /// <param name="_apiKey">User's API key</param>
+    /// <returns>User ID</returns>
     public static int getUserFromKey(string _apiKey)
     {
         int id = -1;
@@ -111,6 +125,11 @@ public class UserDB
         return id;
     }
 
+    /// <summary>
+    /// Inserts user into DB
+    /// </summary>
+    /// <param name="_user">User to insert</param>
+    /// <returns>Inserted user, including user's ID</returns>
     public static User insert(User _user)
     {
         SqlConnection con = new SqlConnection(connectionString);
@@ -138,6 +157,13 @@ public class UserDB
         return _user;
     }
 
+
+    /// <summary>
+    /// Updates user in DB
+    /// </summary>
+    /// <param name="_user">User's details to be updated</param>
+    /// <param name="_id">ID of user to update</param>
+    /// <returns>True/false depending on success of update</returns>
     public static bool update(User _user, int _id)
     {
         bool successful;
@@ -167,6 +193,11 @@ public class UserDB
         return successful;
     }
 
+    /// <summary>
+    /// Deletes user from DB
+    /// </summary>
+    /// <param name="_id">ID of user to delete</param>
+    /// <returns>True/false depending on success of delete</returns>
     public static bool delete(int _id)
     {
         bool successful;
