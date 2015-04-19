@@ -4,9 +4,10 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 using System.Net.Http;
+using System.Net;
 
 /// <summary>
-/// Summary description for JobApplication
+/// Job Application class to represent a job application
 /// </summary>
 
 [DataContract]
@@ -85,7 +86,7 @@ public class JobApplication
     }
 
     //Salary
-    //private int _salary;
+    //private int _salary;Recruiter
     //[DataMember]
     //public int Salary
     //{
@@ -139,7 +140,7 @@ public class JobApplication
 
 
     /// <summary>
-    /// Constructor without town info, for creating applications from user input
+    /// Constructor with all parameters
     /// </summary>
     /// <param name="_jobTitle">Title of job</param>
     /// <param name="_companyName">Name of Company</param>
@@ -167,4 +168,14 @@ public class JobApplication
         this.ApplicationNotes = _applicationNotes;
         this.UserID = _userid;
     }
+
+    /// <summary>
+    /// Calls PostcodeCheck to ascertain if the object's postcode is valid
+    /// </summary>
+    /// <returns>bool - valid or not</returns>
+    public bool isPostcodeValid()
+    {
+        return PostcodeCheck.validatePostcode(this._jobPostcode);
+    }
+
 }
