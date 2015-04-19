@@ -8,11 +8,15 @@ using System.Web;
 using System.Web.Script.Serialization;
 
 /// <summary>
-/// Summary description for Utils
+/// Utils class providing objects and methods that have no place elsewhere
 /// </summary>
 public class Utils
 {
-
+    /// <summary>
+    /// Retrieves application API key from request
+    /// </summary>
+    /// <param name="_req">HTTPRequest from request</param>
+    /// <returns>API Key as a string</returns>
     public static string isAuthenticated(HttpRequest _req)
     {
         string apiKey = "";
@@ -50,34 +54,5 @@ public class Utils
         _jsonData.WriteObject(outputStream, d);
     }
 
-    public static bool isPostcodeValid(JobApplication _job)
-    {
-        //use different serializer, because it doesn't require everything to be xml
-        var serializer = new JavaScriptSerializer();
-        PostcodeCheck pcheck = new PostcodeCheck();
-
-        //check if postcode is valid
-        string apiUrl = "http://api.postcodes.io/postcodes/?/validate";
-        apiUrl = apiUrl.Replace("?", _job.JobPostcode);
-
-        using (var client = new WebClient())
-        {
-            client.Headers.Add("Content-Type", "application/json");
-
-            Stream data = client.OpenRead(apiUrl);
-            StreamReader reader = new StreamReader(data);
-            string s = reader.ReadToEnd();
-
-            pcheck = serializer.Deserialize<PostcodeCheck>(s);
-
-            data.Close();
-            reader.Close();
-        }
-
-        if (pcheck.result == true && pcheck.status == 200)
-            return true;
-        else
-            return false;
-    }
-
+    
 }
