@@ -12,6 +12,11 @@ public class UserHttpHandler : IHttpHandler
 {
     public bool IsReusable { get { return true; } }
 
+   ///<summary>
+    /// Process request method, called by web.config if /users is hit.
+    /// Coordinates routes through the code, and distributes to following methods
+    /// </summary>
+    /// <param name="_context">HTTPContext of the request</param>
     public void ProcessRequest(HttpContext _context)
     {
         HttpRequest request = _context.Request;
@@ -87,6 +92,11 @@ public class UserHttpHandler : IHttpHandler
         }
     }
 
+    ///<summary>
+    /// Coordinates retrieval of all users from DB and writes JSON 
+    /// to output stream
+    /// </summary>
+    /// <param name="_context">HTTPContext of the request</param>
     private void getAll(HttpContext _context)
     {
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
@@ -105,6 +115,12 @@ public class UserHttpHandler : IHttpHandler
         }
     }
 
+   /// <summary>
+    /// Coordinates retrieval of a single user from DB and writes
+    /// JSON to output steam
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of the user</param>
     private void get(HttpContext _context, int _id)
     {
         //Get a list of Logs - note we need it as an IEnumerable object otherwise the serializer can't cope.
@@ -121,6 +137,11 @@ public class UserHttpHandler : IHttpHandler
         }
     }
 
+///<summary>
+    /// Coordinates insertion of a new user into the DB
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_apiKey">API key, to identiy user associated with user</param>
     private void insert(HttpContext _context)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(User));
@@ -141,6 +162,11 @@ public class UserHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates updation of user
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of user to update</param>
     private void update(HttpContext _context, int _id)
     {
         DataContractJsonSerializer json = new DataContractJsonSerializer(typeof(User));
@@ -160,6 +186,11 @@ public class UserHttpHandler : IHttpHandler
         }
     }
 
+    /// <summary>
+    /// Coordinates deletion of a user
+    /// </summary>
+    /// <param name="_context">HTTPContext of the API request</param>
+    /// <param name="_id">ID of user to delete</param>
     private void delete(HttpContext _context, int _id)
     {
         bool success = UserDB.delete(_id);
